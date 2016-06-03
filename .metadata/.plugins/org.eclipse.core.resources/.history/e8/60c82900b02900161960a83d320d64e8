@@ -1,0 +1,80 @@
+package FinalProject;
+
+import java.awt.Color;
+import java.awt.Graphics;
+
+public class CheckerPiece extends Square{
+
+	private Color colorFill;
+	private Color colorLine;
+	private boolean clicked;
+	private boolean king;
+	
+	public CheckerPiece(){
+		super(40,40,40,40);
+		setColor(Color.red);
+		clicked = false;
+		king = false;
+	}
+	
+	public CheckerPiece(int x, int y, Color c)
+	{
+		super(x,y,40,40);
+		setColor(c);
+		clicked = false;
+		king = false;
+	}
+
+	public CheckerPiece(int x, int y, int w, int h, Color c)
+	{
+		super(x,y,w,h);
+		setColor(c);
+		clicked = false;
+		king = false;
+	}
+	
+	public void setColor(Color c){
+		colorFill = c;
+		if(c.equals(Color.blue))
+			colorLine = new Color(0,0,139);
+		else
+			colorLine = new Color(139,0,0);
+	}
+	
+	public Color getColorFill(){
+		return colorFill;
+	}
+	
+	public Color getColorLine(){
+		return colorLine;
+	}
+	
+	public void setClicked(boolean c){
+		clicked = c;
+	}
+	
+	public boolean getClicked(){
+		return clicked;
+	}
+	
+	public void setKing(boolean k){
+		king = k;
+	}
+	public boolean getKing(){
+		return king;
+	}
+	
+	@Override
+	public void draw(Graphics window) {
+		// TODO Auto-generated method stub
+		if(getClicked()){
+			window.setColor(Color.orange);
+			window.fillRect(getX()-10, getY()-10, 50, 50);
+		}
+		window.setColor(getColorFill());
+		window.fillOval(getX(), getY(), getWidth(), getHeight());
+		window.setColor(getColorLine());
+		window.drawOval(getX(), getY(), getWidth(), getHeight());
+	}
+	
+}

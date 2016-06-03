@@ -14,6 +14,7 @@ public class CheckerBoard extends Canvas implements MouseListener {
 	private boolean mouseClicked, gameOver;
 	private int mouseButton, prevMouseButton;
 	private Board board;
+	private String turn;
 	
 	private ArrayList<CheckerPiece> redPieces;
 	private ArrayList<CheckerPiece> bluePieces;
@@ -36,6 +37,8 @@ public class CheckerBoard extends Canvas implements MouseListener {
 		
 		redPieces = new ArrayList<CheckerPiece>();
 		bluePieces = new ArrayList<CheckerPiece>();
+		
+		turn = "blue";
 	}
 	
 	
@@ -46,6 +49,7 @@ public class CheckerBoard extends Canvas implements MouseListener {
 		mouseX=e.getX();
 		mouseY=e.getY();
 		mouseButton = e.getButton();
+		markBoard();
 		//System.out.println(mouseX);
 		repaint();
 	}
@@ -84,16 +88,18 @@ public class CheckerBoard extends Canvas implements MouseListener {
 		for(int i = 0; i<3;i++){
 			for(int j = 0; j<8;j++){
 				if(i%2==1){
-					if(j%2==0)
+					if(j%2==0){
 						bluePieces.add(new CheckerPiece((j+1)*50+5, (i+1)*50+5, Color.blue));
 						board.setSpot(i,j, bluePieces.get(count));
 						count++;
+					}
 				}
 				else{
-					if(j%2==1)
+					if(j%2==1){
 						bluePieces.add(new CheckerPiece((j+1)*50+5, (i+1)*50+5, Color.blue));
 						board.setSpot(i,j, bluePieces.get(count));
 						count++;
+					}
 				}
 			}
 		}
@@ -101,16 +107,18 @@ public class CheckerBoard extends Canvas implements MouseListener {
 		for(int i = 5; i<8;i++){
 			for(int j = 0; j<8;j++){
 				if(i%2==1){
-					if(j%2==0)
+					if(j%2==0){
 						redPieces.add(new CheckerPiece((j+1)*50+5, (i+1)*50+5, Color.red));
-						board.setSpot(i,j, bluePieces.get(count));
+						board.setSpot(i,j, redPieces.get(count));
 						count++;
+					}
 				}
 				else{
-					if(j%2==1)
+					if(j%2==1){
 						redPieces.add(new CheckerPiece((j+1)*50+5, (i+1)*50+5, Color.red));
-						board.setSpot(i,j, bluePieces.get(count));
+						board.setSpot(i,j, redPieces.get(count));
 						count++;
+					}
 				}
 			}
 		}
@@ -123,32 +131,83 @@ public class CheckerBoard extends Canvas implements MouseListener {
 	
 	public void markBoard()
 	{
-		if(mouseX>=WIDTH/3&&mouseX<=WIDTH+50&&mouseY>=HEIGHT/3&&mouseY<=HEIGHT+50)
+		
+		if(mouseX>=50&&mouseX<=450&&mouseY>=50&&mouseY<=450)
 		{
 			int r = mouseY/50-1;
 			int c = mouseX/50-1;
 			CheckerPiece piece = (CheckerPiece)board.getSpot(r,c);
-			//if BUTTON1 was pressed and BUTTON1 was not pressed last mouse press
-			if(mouseButton==MouseEvent.BUTTON1&&prevMouseButton!=mouseButton)		//left mouse button pressed
+			boolean colored = true;
+			if(mouseButton==MouseEvent.BUTTON1&&turn.equals("blue"))		//left mouse button pressed
 			{
-				if(piece==null)
-				{
-					
+				if(piece==null){
+					for(CheckerPiece p:bluePieces){
+						if(p.getClicked()){
+							int nr = p.getY()/50-1;
+							int nc = p.getX()/50-1;
+							//System.out.println(r);
+							//System.out.println(c);
+							
+							
+							if(nc-c==1){
+								if(nr-r==1){
+									int x = p.getX();
+									int y = p.getY();
+									p.setX(x+50);
+									p.setY(y+50);
+									board.setSpot(r,c,p);
+									p.setClicked(false);
+									turn = "red";
+								}
+								else{
+									int x = p.getX();
+									int y = p.getY();
+									p.setX(x-50);
+									p.setY(y+50);
+									board.setSpot(r,c,p);
+									p.setClicked(false);
+									turn = "red";
+								}
+							}
+						}
+					}
 				}
-				//save the current button pressed to compare to next button pressed
-				prevMouseButton=mouseButton;
-			}
-			//if BUTTON3 was pressed and BUTTON3 was not pressed last mouse press
-			if(mouseButton==MouseEvent.BUTTON3&&prevMouseButton!=mouseButton){
-				if(piece ==null){
+				else if(piece.getClicked()){
+					piece.setClicked(false);
+				}
+				else if(!piece.getClicked()){
 					
+					for(CheckerPiece p:bluePieces){
+						if(p.getClicked()){
+							colored = false;
+						}
+					}
+					if(colored){
+						if(piece.getColorFill().equals(Color.blue)){
+							piece.setClicked(true);
+							System.out.println(r);
+							System.out.println(c);
+						}
+					}
+				}
+					
+			}		
+			
+			//if BUTTON3 was pressed and BUTTON3 was not pressed last mouse press
+			if(mouseButton==MouseEvent.BUTTON3&&turn.equals("red")){
+				if(piece.getColorFill().equals(Color.red)){
+					piece.setClicked(!piece.getClicked());
 				}
 			}
 
 				//save the current button pressed to compare to next button pressed
-				prevMouseButton=mouseButton;				
+							
 		
 		}
+	}
+	
+	public void movePiece(CheckerPiece piece){
+		
 	}
 	
 	@Override

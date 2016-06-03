@@ -67,6 +67,10 @@ public class CheckerPiece extends Square{
 	@Override
 	public void draw(Graphics window) {
 		// TODO Auto-generated method stub
+		if(getClicked()){
+			window.setColor(Color.orange);
+			window.fillRect(getX()-5, getY()-5, 51, 51);
+		}
 		window.setColor(getColorFill());
 		window.fillOval(getX(), getY(), getWidth(), getHeight());
 		window.setColor(getColorLine());
