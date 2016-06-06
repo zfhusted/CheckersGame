@@ -76,5 +76,12 @@ public class CheckerPiece extends Square{
 		window.setColor(getColorLine());
 		window.drawOval(getX(), getY(), getWidth(), getHeight());
 	}
+
+	@Override
+	public String toString() {
+		return "CheckerPiece";
+	}
+	
+	
 	
 }
