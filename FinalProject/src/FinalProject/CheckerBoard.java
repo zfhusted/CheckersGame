@@ -133,7 +133,6 @@ public class CheckerBoard extends Canvas implements MouseListener {
 	
 	public void markBoard()
 	{
-		
 		if(mouseX>=50&&mouseX<=450&&mouseY>=50&&mouseY<=450)
 		{
 			int r = mouseY/50-1;
@@ -149,6 +148,22 @@ public class CheckerBoard extends Canvas implements MouseListener {
 							int nc = p.getX()/50-1;
 							//System.out.println(r);
 							//System.out.println(c);
+							if(nr-r==-2){
+								if(nc-c==-2){
+									if(board.getSpot(nr-1, nc-1)!=null){
+										int x = p.getX();
+										int y = p.getY();
+										takePiece((CheckerPiece)board.getSpot(nr-1, nc-1));
+									}
+								}
+								else if(nc-c==2){
+									if(board.getSpot(nr-1, nc+1)!=null){
+										int x = p.getX();
+										int y = p.getY();
+										takePiece((CheckerPiece)board.getSpot(nr-1, nc+1));
+									}
+								}
+							}
 							
 							if(nr-r==-1){
 								if(nc-c==-1){
@@ -194,6 +209,23 @@ public class CheckerBoard extends Canvas implements MouseListener {
 							int nr = p.getY()/50-1;
 							int nc = p.getX()/50-1;
 							
+							if(nr-r==2){
+								if(nc-c==-2){
+									if(board.getSpot(nr+1, nc+1)!=null){
+										int x = p.getX();
+										int y = p.getY();
+										takePiece((CheckerPiece)board.getSpot(nr+1, nc+1));
+									}
+								}
+								else if(nc-c==2){
+									if(board.getSpot(nr+1, nc-1)!=null){
+										int x = p.getX();
+										int y = p.getY();
+										takePiece((CheckerPiece)board.getSpot(nr+1, nc-1));
+									}
+								}
+							}
+							
 							if(nr-r==1){
 								if(nc-c==-1){
 									int x = p.getX();
@@ -233,7 +265,12 @@ public class CheckerBoard extends Canvas implements MouseListener {
 	}
 	
 	public void takePiece(CheckerPiece piece){
-		
+		if(piece.getColorFill().equals(Color.blue)){
+			bluePieces.remove(piece);
+		}
+		else{
+			redPieces.remove(piece);
+		}
 	}
 	
 	public void movePiece(int x, int y, int r, int c, int nr, int nc, CheckerPiece p){

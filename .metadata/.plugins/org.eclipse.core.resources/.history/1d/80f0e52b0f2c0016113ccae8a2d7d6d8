@@ -39,6 +39,45 @@ public class CheckerBoard extends Canvas implements MouseListener {
 		bluePieces = new ArrayList<CheckerPiece>();
 		
 		turn = "blue";
+		
+		int count = 0;
+		for(int i = 0; i<3;i++){
+			for(int j = 0; j<8;j++){
+				if(i%2==1){
+					if(j%2==0){
+						bluePieces.add(new CheckerPiece((j+1)*50+5, (i+1)*50+5, Color.blue));
+						board.setSpot(i,j, bluePieces.get(count));
+						count++;
+					}
+				}
+				else{
+					if(j%2==1){
+						bluePieces.add(new CheckerPiece((j+1)*50+5, (i+1)*50+5, Color.blue));
+						board.setSpot(i,j, bluePieces.get(count));
+						count++;
+					}
+				}
+			}
+		}
+		count = 0;
+		for(int i = 5; i<8;i++){
+			for(int j = 0; j<8;j++){
+				if(i%2==1){
+					if(j%2==0){
+						redPieces.add(new CheckerPiece((j+1)*50+5, (i+1)*50+5, Color.red));
+						board.setSpot(i,j, redPieces.get(count));
+						count++;
+					}
+				}
+				else{
+					if(j%2==1){
+						redPieces.add(new CheckerPiece((j+1)*50+5, (i+1)*50+5, Color.red));
+						board.setSpot(i,j, redPieces.get(count));
+						count++;
+					}
+				}
+			}
+		}
 	}
 	
 	
@@ -84,44 +123,7 @@ public class CheckerBoard extends Canvas implements MouseListener {
 			}
 			rcount++;
 		}
-		int count = 0;
-		for(int i = 0; i<3;i++){
-			for(int j = 0; j<8;j++){
-				if(i%2==1){
-					if(j%2==0){
-						bluePieces.add(new CheckerPiece((j+1)*50+5, (i+1)*50+5, Color.blue));
-						board.setSpot(i,j, bluePieces.get(count));
-						count++;
-					}
-				}
-				else{
-					if(j%2==1){
-						bluePieces.add(new CheckerPiece((j+1)*50+5, (i+1)*50+5, Color.blue));
-						board.setSpot(i,j, bluePieces.get(count));
-						count++;
-					}
-				}
-			}
-		}
-		count = 0;
-		for(int i = 5; i<8;i++){
-			for(int j = 0; j<8;j++){
-				if(i%2==1){
-					if(j%2==0){
-						redPieces.add(new CheckerPiece((j+1)*50+5, (i+1)*50+5, Color.red));
-						board.setSpot(i,j, redPieces.get(count));
-						count++;
-					}
-				}
-				else{
-					if(j%2==1){
-						redPieces.add(new CheckerPiece((j+1)*50+5, (i+1)*50+5, Color.red));
-						board.setSpot(i,j, redPieces.get(count));
-						count++;
-					}
-				}
-			}
-		}
+		
 		
 		for(int i =0; i<12; i++){
 			redPieces.get(i).draw(window);
@@ -145,16 +147,19 @@ public class CheckerBoard extends Canvas implements MouseListener {
 						if(p.getClicked()){
 							int nr = p.getY()/50-1;
 							int nc = p.getX()/50-1;
-							System.out.println(nr);
-							System.out.println(nc);
-							if(nr-r==1){
-								if(nc-c==1){
-									p.setX(getX()+50);
-									p.setY(getY()+50);
+							//System.out.println(r);
+							//System.out.println(c);
+							
+							if(nr-r==-1){
+								if(nc-c==-1){
+									int x = p.getX();
+									int y = p.getY();
+									movePiece(x+50, y+50, r, c, nr, nc, p);
 								}
-								else{
-									p.setX(getX()+50);
-									p.setY(getY()-50);
+								else if(nc-c==1){
+									int x = p.getX();
+									int y = p.getY();
+									movePiece(x-50, y+50, r, c, nr, nc, p);
 								}
 							}
 						}
@@ -183,19 +188,64 @@ public class CheckerBoard extends Canvas implements MouseListener {
 			
 			//if BUTTON3 was pressed and BUTTON3 was not pressed last mouse press
 			if(mouseButton==MouseEvent.BUTTON3&&turn.equals("red")){
-				if(piece.getColorFill().equals(Color.red)){
-					piece.setClicked(!piece.getClicked());
+				if(piece==null){
+					for(CheckerPiece p:redPieces){
+						if(p.getClicked()){
+							int nr = p.getY()/50-1;
+							int nc = p.getX()/50-1;
+							
+							if(nr-r==1){
+								if(nc-c==-1){
+									int x = p.getX();
+									int y = p.getY();
+									movePiece(x+50, y-50, r, c, nr, nc, p);
+								}
+								else if(nc-c==1){
+									int x = p.getX();
+									int y = p.getY();
+									movePiece(x-50, y-50, r, c, nr, nc, p);
+								}
+								
+							}
+						}
+					}
+				}
+				else if(piece.getClicked()){
+					piece.setClicked(false);
+				}
+				else if(!piece.getClicked()){
+					
+					for(CheckerPiece p:redPieces){
+						if(p.getClicked()){
+							colored = false;
+						}
+					}
+					if(colored){
+						if(piece.getColorFill().equals(Color.red)){
+							piece.setClicked(true);
+							System.out.println(r);
+							System.out.println(c);
+						}
+					}
 				}
 			}
-
-				//save the current button pressed to compare to next button pressed
-							
-		
 		}
 	}
 	
-	public void movePiece(CheckerPiece piece){
+	public void takePiece(CheckerPiece piece){
 		
+	}
+	
+	public void movePiece(int x, int y, int r, int c, int nr, int nc, CheckerPiece p){
+		p.setX(x);
+		p.setY(y);
+		board.setSpot(r,c,p);
+		board.setSpot(nr, nc, null);
+		p.setClicked(false);
+		if(turn.equals("red"))
+			turn = "blue";
+		else
+			turn = "red";
 	}
 	
 	@Override
