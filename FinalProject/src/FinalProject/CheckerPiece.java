@@ -9,12 +9,14 @@ public class CheckerPiece extends Square{
 	private Color colorLine;
 	private boolean clicked;
 	private boolean king;
+	private boolean taken;
 	
 	public CheckerPiece(){
 		super(40,40,40,40);
 		setColor(Color.red);
 		clicked = false;
 		king = false;
+		taken = false;
 	}
 	
 	public CheckerPiece(int x, int y, Color c)
@@ -23,6 +25,7 @@ public class CheckerPiece extends Square{
 		setColor(c);
 		clicked = false;
 		king = false;
+		taken = false;
 	}
 
 	public CheckerPiece(int x, int y, int w, int h, Color c)
@@ -31,6 +34,7 @@ public class CheckerPiece extends Square{
 		setColor(c);
 		clicked = false;
 		king = false;
+		taken = false;
 	}
 	
 	public void setColor(Color c){
@@ -62,6 +66,12 @@ public class CheckerPiece extends Square{
 	}
 	public boolean getKing(){
 		return king;
+	}
+	public void setTaken(boolean t){
+		taken = t;
+	}
+	public boolean getTaken(){
+		return taken;
 	}
 	
 	@Override

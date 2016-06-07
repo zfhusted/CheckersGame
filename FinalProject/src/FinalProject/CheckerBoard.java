@@ -150,17 +150,50 @@ public class CheckerBoard extends Canvas implements MouseListener {
 							//System.out.println(c);
 							if(nr-r==-2){
 								if(nc-c==-2){
-									if(board.getSpot(nr-1, nc-1)!=null){
+									if(board.getSpot(nr+1, nc+1)!=null){
 										int x = p.getX();
 										int y = p.getY();
-										takePiece((CheckerPiece)board.getSpot(nr-1, nc-1));
+										takePiece((CheckerPiece)board.getSpot(nr+1, nc+1), p);
+										movePiece(x+100, y+100, r, c, nr, nc, p);
+										if(!checkMove(r,c)){
+											turn = "red";
+										}
+										
 									}
 								}
 								else if(nc-c==2){
+									if(board.getSpot(nr+1, nc-1)!=null){
+										int x = p.getX();
+										int y = p.getY();
+										takePiece((CheckerPiece)board.getSpot(nr+1, nc-1), p);
+										movePiece(x-100, y+100, r, c, nr, nc, p);
+										if(!checkMove(r,c)){
+											turn = "red";
+										}
+									}
+								}
+							}
+							else if(nr-r==2){
+								if(nc-c==-2){
 									if(board.getSpot(nr-1, nc+1)!=null){
 										int x = p.getX();
 										int y = p.getY();
-										takePiece((CheckerPiece)board.getSpot(nr-1, nc+1));
+										takePiece((CheckerPiece)board.getSpot(nr-1, nc+1), p);
+										movePiece(x+100, y-100, r, c, nr, nc, p);
+										if(!checkMove(r,c)){
+											turn = "red";
+										}
+									}
+								}
+								else if(nc-c==2){
+									if(board.getSpot(nr-1, nc-1)!=null){
+										int x = p.getX();
+										int y = p.getY();
+										takePiece((CheckerPiece)board.getSpot(nr-1, nc-1), p);
+										movePiece(x-100, y-100, r, c, nr, nc, p);
+										if(!checkMove(r,c)){
+											turn = "red";
+										}
 									}
 								}
 							}
@@ -170,11 +203,13 @@ public class CheckerBoard extends Canvas implements MouseListener {
 									int x = p.getX();
 									int y = p.getY();
 									movePiece(x+50, y+50, r, c, nr, nc, p);
+									turn = "red";
 								}
 								else if(nc-c==1){
 									int x = p.getX();
 									int y = p.getY();
 									movePiece(x-50, y+50, r, c, nr, nc, p);
+									turn = "red";
 								}
 							}
 						}
@@ -193,12 +228,9 @@ public class CheckerBoard extends Canvas implements MouseListener {
 					if(colored){
 						if(piece.getColorFill().equals(Color.blue)){
 							piece.setClicked(true);
-							System.out.println(r);
-							System.out.println(c);
 						}
 					}
 				}
-					
 			}		
 			
 			//if BUTTON3 was pressed and BUTTON3 was not pressed last mouse press
@@ -211,17 +243,49 @@ public class CheckerBoard extends Canvas implements MouseListener {
 							
 							if(nr-r==2){
 								if(nc-c==-2){
+									if(board.getSpot(nr-1, nc+1)!=null){
+										int x = p.getX();
+										int y = p.getY();
+										takePiece((CheckerPiece)board.getSpot(nr-1, nc+1), p);
+										movePiece(x+100, y-100, r, c, nr, nc, p);
+										if(!checkMove(r,c)){
+											turn = "blue";
+										}
+									}
+								}
+								else if(nc-c==2){
+									if(board.getSpot(nr-1, nc-1)!=null){
+										int x = p.getX();
+										int y = p.getY();
+										takePiece((CheckerPiece)board.getSpot(nr-1, nc-1), p);
+										movePiece(x-100, y-100, r, c, nr, nc, p);
+										if(!checkMove(r,c)){
+											turn = "blue";
+										}
+									}
+								}
+							}
+							else if(nr-r==-2){
+								if(nc-c==-2){
 									if(board.getSpot(nr+1, nc+1)!=null){
 										int x = p.getX();
 										int y = p.getY();
-										takePiece((CheckerPiece)board.getSpot(nr+1, nc+1));
+										takePiece((CheckerPiece)board.getSpot(nr+1, nc+1), p);
+										movePiece(x+100, y+100, r, c, nr, nc, p);
+										if(!checkMove(r,c)){
+											turn = "blue";
+										}
 									}
 								}
 								else if(nc-c==2){
 									if(board.getSpot(nr+1, nc-1)!=null){
 										int x = p.getX();
 										int y = p.getY();
-										takePiece((CheckerPiece)board.getSpot(nr+1, nc-1));
+										takePiece((CheckerPiece)board.getSpot(nr+1, nc-1), p);
+										movePiece(x-100, y+100, r, c, nr, nc, p);
+										if(!checkMove(r,c)){
+											turn = "blue";
+										}
 									}
 								}
 							}
@@ -231,11 +295,13 @@ public class CheckerBoard extends Canvas implements MouseListener {
 									int x = p.getX();
 									int y = p.getY();
 									movePiece(x+50, y-50, r, c, nr, nc, p);
+									turn = "blue";
 								}
 								else if(nc-c==1){
 									int x = p.getX();
 									int y = p.getY();
 									movePiece(x-50, y-50, r, c, nr, nc, p);
+									turn ="blue";
 								}
 								
 							}
@@ -255,8 +321,6 @@ public class CheckerBoard extends Canvas implements MouseListener {
 					if(colored){
 						if(piece.getColorFill().equals(Color.red)){
 							piece.setClicked(true);
-							System.out.println(r);
-							System.out.println(c);
 						}
 					}
 				}
@@ -264,12 +328,22 @@ public class CheckerBoard extends Canvas implements MouseListener {
 		}
 	}
 	
-	public void takePiece(CheckerPiece piece){
-		if(piece.getColorFill().equals(Color.blue)){
-			bluePieces.remove(piece);
+	public void takePiece(CheckerPiece piece, CheckerPiece p){
+		if(piece.getColorFill().equals(Color.blue)&&p.getColorFill().equals(Color.red)){
+			board.setSpot(piece.getY()/50-1, piece.getX()/50-1, null);piece.setX(500);
+			piece.setY(400);
+			piece.setHeight(25);
+			piece.setWidth(25);
+			piece.setTaken(true);
+			
 		}
-		else{
-			redPieces.remove(piece);
+		else if(piece.getColorFill().equals(Color.red)&& p.getColorFill().equals(Color.blue)){
+			board.setSpot(piece.getY()/50-1, piece.getX()/50-1, null);
+			piece.setX(500);
+			piece.setY(100);
+			piece.setHeight(25);
+			piece.setWidth(25);
+			piece.setTaken(true);
 		}
 	}
 	
@@ -279,10 +353,17 @@ public class CheckerBoard extends Canvas implements MouseListener {
 		board.setSpot(r,c,p);
 		board.setSpot(nr, nc, null);
 		p.setClicked(false);
-		if(turn.equals("red"))
-			turn = "blue";
-		else
-			turn = "red";
+			
+	}
+	
+	public boolean checkMove(int r, int c){
+		if((board.getSpot(r+1, c+1)!= null&& board.getSpot(r+2, c+2)==null)||
+				(board.getSpot(r+1, c-1)!=null&&board.getSpot(r+2, c-2)==null)||
+				(board.getSpot(r-1, c-1)!=null&&board.getSpot(r-2, c-2)==null)||
+				(board.getSpot(r-1, c+1)!=null&&board.getSpot(r-2, c+2)==null)){
+			return true;
+		}
+		return false;
 	}
 	
 	@Override
