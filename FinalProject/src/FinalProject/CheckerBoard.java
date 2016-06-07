@@ -15,6 +15,8 @@ public class CheckerBoard extends Canvas implements MouseListener {
 	private int mouseButton, prevMouseButton;
 	private Board board;
 	private String turn;
+	private int redCap;
+	private int blueCap;
 	
 	private ArrayList<CheckerPiece> redPieces;
 	private ArrayList<CheckerPiece> bluePieces;
@@ -39,6 +41,8 @@ public class CheckerBoard extends Canvas implements MouseListener {
 		bluePieces = new ArrayList<CheckerPiece>();
 		
 		turn = "blue";
+		redCap=0;
+		blueCap=0;
 		
 		int count = 0;
 		for(int i = 0; i<3;i++){
@@ -129,6 +133,8 @@ public class CheckerBoard extends Canvas implements MouseListener {
 			redPieces.get(i).draw(window);
 			bluePieces.get(i).draw(window);
 		}
+		window.setColor(Color.green);
+		window.drawString(getWinner(), 600, 250);
 	}
 	
 	public void markBoard()
@@ -158,7 +164,7 @@ public class CheckerBoard extends Canvas implements MouseListener {
 										if(!checkMove(r,c)){
 											turn = "red";
 										}
-										
+										redCap++;
 									}
 								}
 								else if(nc-c==2){
@@ -170,6 +176,7 @@ public class CheckerBoard extends Canvas implements MouseListener {
 										if(!checkMove(r,c)){
 											turn = "red";
 										}
+										redCap++;
 									}
 								}
 							}
@@ -183,6 +190,7 @@ public class CheckerBoard extends Canvas implements MouseListener {
 										if(!checkMove(r,c)){
 											turn = "red";
 										}
+										redCap++;
 									}
 								}
 								else if(nc-c==2){
@@ -194,10 +202,26 @@ public class CheckerBoard extends Canvas implements MouseListener {
 										if(!checkMove(r,c)){
 											turn = "red";
 										}
+										redCap++;
 									}
 								}
 							}
-							
+							if(p.getKing()){
+								if(nr-r==1){
+									if(nc-c==-1){
+										int x = p.getX();
+										int y = p.getY();
+										movePiece(x+50, y-50, r, c, nr, nc, p);
+										turn = "red";
+									}
+									else if(nc-c==1){
+										int x = p.getX();
+										int y = p.getY();
+										movePiece(x-50, y-50, r, c, nr, nc, p);
+										turn ="red";
+									}
+								}
+							}
 							if(nr-r==-1){
 								if(nc-c==-1){
 									int x = p.getX();
@@ -251,6 +275,7 @@ public class CheckerBoard extends Canvas implements MouseListener {
 										if(!checkMove(r,c)){
 											turn = "blue";
 										}
+										blueCap++;
 									}
 								}
 								else if(nc-c==2){
@@ -262,6 +287,7 @@ public class CheckerBoard extends Canvas implements MouseListener {
 										if(!checkMove(r,c)){
 											turn = "blue";
 										}
+										blueCap++;
 									}
 								}
 							}
@@ -275,6 +301,7 @@ public class CheckerBoard extends Canvas implements MouseListener {
 										if(!checkMove(r,c)){
 											turn = "blue";
 										}
+										blueCap++;
 									}
 								}
 								else if(nc-c==2){
@@ -286,6 +313,24 @@ public class CheckerBoard extends Canvas implements MouseListener {
 										if(!checkMove(r,c)){
 											turn = "blue";
 										}
+										blueCap++;
+									}
+								}
+							}
+							
+							if(p.getKing()){
+								if(nr-r==-1){
+									if(nc-c==-1){
+										int x = p.getX();
+										int y = p.getY();
+										movePiece(x+50, y+50, r, c, nr, nc, p);
+										turn = "blue";
+									}
+									else if(nc-c==1){
+										int x = p.getX();
+										int y = p.getY();
+										movePiece(x-50, y+50, r, c, nr, nc, p);
+										turn = "blue";
 									}
 								}
 							}
@@ -330,8 +375,13 @@ public class CheckerBoard extends Canvas implements MouseListener {
 	
 	public void takePiece(CheckerPiece piece, CheckerPiece p){
 		if(piece.getColorFill().equals(Color.blue)&&p.getColorFill().equals(Color.red)){
-			board.setSpot(piece.getY()/50-1, piece.getX()/50-1, null);piece.setX(500);
-			piece.setY(400);
+			board.setSpot(piece.getY()/50-1, piece.getX()/50-1, null);
+			if(blueCap< 6){
+				piece.setPos(500+28*(blueCap+1), 400);
+			}
+			else{
+				piece.setPos(500+28*(blueCap-5), 428);
+			}
 			piece.setHeight(25);
 			piece.setWidth(25);
 			piece.setTaken(true);
@@ -339,8 +389,13 @@ public class CheckerBoard extends Canvas implements MouseListener {
 		}
 		else if(piece.getColorFill().equals(Color.red)&& p.getColorFill().equals(Color.blue)){
 			board.setSpot(piece.getY()/50-1, piece.getX()/50-1, null);
-			piece.setX(500);
-			piece.setY(100);
+			System.out.println(redCap);
+			if(redCap< 6){
+				piece.setPos(500+28*(redCap+1), 100);
+			}
+			else{
+				piece.setPos(500+28*(redCap-5), 128);
+			}
 			piece.setHeight(25);
 			piece.setWidth(25);
 			piece.setTaken(true);
@@ -353,19 +408,72 @@ public class CheckerBoard extends Canvas implements MouseListener {
 		board.setSpot(r,c,p);
 		board.setSpot(nr, nc, null);
 		p.setClicked(false);
+		if(r==0&&p.getColorFill().equals(Color.red)){
+			p.setKing(true);
+		}
+		else if(r==7&&p.getColorFill().equals(Color.blue)){
+			p.setKing(true);
+		}
 			
 	}
 	
 	public boolean checkMove(int r, int c){
-		if((board.getSpot(r+1, c+1)!= null&& board.getSpot(r+2, c+2)==null)||
-				(board.getSpot(r+1, c-1)!=null&&board.getSpot(r+2, c-2)==null)||
-				(board.getSpot(r-1, c-1)!=null&&board.getSpot(r-2, c-2)==null)||
-				(board.getSpot(r-1, c+1)!=null&&board.getSpot(r-2, c+2)==null)){
-			return true;
+		if(r!=0 && c!=0 && r!=7 && c!= 7 && r!=1 && c!=1 && r!=6 && c!= 6){
+			if((board.getSpot(r+1, c+1)!= null&& board.getSpot(r+2, c+2)==null)||
+					(board.getSpot(r+1, c-1)!=null&&board.getSpot(r+2, c-2)==null)||
+					(board.getSpot(r-1, c-1)!=null&&board.getSpot(r-2, c-2)==null)||
+					(board.getSpot(r-1, c+1)!=null&&board.getSpot(r-2, c+2)==null)){
+				return true;
+			}
+		}
+		else if((r==0 && c==7)||(r==0 && c==6)){
+			if((board.getSpot(r+1, c-1)!=null&&board.getSpot(r+2, c-2)==null)){
+				return true;
+			}
+		}
+		else if((r==7 && c==0) || (r==6 &&c==0)){
+			if(board.getSpot(r-1, c+1)!=null&&board.getSpot(r-2, c+2)==null){
+				return true;
+			}
+		}
+		else if(r==0||r==1){
+			if((board.getSpot(r+1, c+1)!= null&& board.getSpot(r+2, c+2)==null)||
+			(board.getSpot(r+1, c-1)!=null&&board.getSpot(r+2, c-2)==null)){
+				return true;
+			}
+		}
+		else if(r==7||r==6){
+			if((board.getSpot(r-1, c-1)!=null&&board.getSpot(r-2, c-2)==null)||
+					(board.getSpot(r-1, c+1)!=null&&board.getSpot(r-2, c+2)==null)){
+				return true;
+			}
+		}
+		else if(c==0||c==1){
+			if((board.getSpot(r+1, c+1)!= null&& board.getSpot(r+2, c+2)==null)||
+					(board.getSpot(r-1, c+1)!=null&&board.getSpot(r-2, c+2)==null)){
+				return true;
+			}
+		}
+		else if(c==7||c==6){
+			if((board.getSpot(r+1, c-1)!=null&&board.getSpot(r+2, c-2)==null)||
+					(board.getSpot(r-1, c-1)!=null&&board.getSpot(r-2, c-2)==null)){
+				return true;
+			}
 		}
 		return false;
 	}
 	
+	public String getWinner(){
+		if(redCap==12){
+			return "Blue Wins!";
+		}
+		else if(blueCap==12){
+			return "Red Wins!";
+		}
+		else{
+			return "";
+		}
+	}
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
